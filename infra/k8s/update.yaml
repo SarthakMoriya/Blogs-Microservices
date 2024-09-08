@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: update-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: update-depl
+  template:
+    metadata:
+      labels:
+        app: update-depl
+    spec:
+      containers:
+        - name: update-depl
+          image: sarthakm96/update
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: update-srv
+spec: 
+  type: ClusterIP
+  selector:
+    app: update-depl
+  ports:
+    - name: update-srv
+      protocol: TCP
+      port: 3004
+      targetPort: 3004

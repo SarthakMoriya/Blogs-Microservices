@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: create-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: create-depl
+  template:
+    metadata:
+      labels:  
+        app: create-depl
+    spec:
+      containers:
+        - name: create-depl
+          image: sarthakm96/create
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: create-srv
+spec: 
+  type: ClusterIP
+  selector:
+    app: create-depl
+  ports:
+    - name: create-srv
+      protocol: TCP
+      port: 3001
+      targetPort: 3001

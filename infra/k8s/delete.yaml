@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delete-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: delete-depl
+  template:
+    metadata:
+      labels:
+        app: delete-depl
+    spec:
+      containers:
+        - name: delete-depl
+          image: sarthakm96/delete
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: delete-srv
+spec: 
+  type: ClusterIP
+  selector:
+    app: delete-depl
+  ports:
+    - name: delete-srv
+      protocol: TCP
+      port: 3002
+      targetPort: 3002

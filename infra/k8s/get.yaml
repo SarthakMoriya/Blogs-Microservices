@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: get-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: get-depl
+  template:
+    metadata:
+      labels:
+        app: get-depl
+    spec:
+      containers:
+        - name: get-depl
+          image: sarthakm96/get
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: get-srv
+spec: 
+  type: ClusterIP
+  selector:
+    app: get-depl
+  ports:
+    - name: get-srv
+      protocol: TCP
+      port: 3003
+      targetPort: 3003
