@@ -13,8 +13,6 @@ app.use('/auth',authRouter)
 const verifyToken = async (req, res, next) => {
   try {
     const token = req.headers["authorization"];
-    console.log(token)
-    console.log(req.headers)
     const validToken = jwt.verify(token, "SECRETS");
     if (validToken) next();
     else
@@ -60,9 +58,21 @@ router.post('/create',verifyToken,async (req,res)=>{
     let data=req.body
     const blog=await axios.post('http://create-srv:3001/create/',data)
     console.log(blog.data)
-    res.send(blog.data);
+    const {message,status,body,error}=blog.data
+    res.status(200).json({message,status,body,error})
   } catch (error) {
     console.log(error)
+    res.status(404).json({message:"CREATE SERVICE ERROR",status:"fail",body:{}})
+  }
+})
+router.delete('/delete/:id',verifyToken,async (req,res)=>{
+  try {
+    const blog=await axios.delete(`http://delete-srv:3002/delete/${req.params.id}`)
+    const {message,status,body}=blog.data
+    res.status(200).json({message,status,body})
+  } catch (error) {
+    console.log(error)
+    res.status(404).json({message:"DELETE SERVICE ERROR",status:"fail",body:{}})
   }
 })
 
