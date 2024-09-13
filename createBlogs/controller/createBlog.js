@@ -4,6 +4,7 @@ import nats from "nats";
 
 export const createBlog = async (req, res) => {
   try {
+    console.log(req.body)
     const blog = new Blog({ ...req.body });
     await blog.save();
 
