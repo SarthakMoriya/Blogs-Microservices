@@ -10,32 +10,12 @@ spec:
     - host: blogs.com
       http:
          paths:
-          - path: /create
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: create-srv
+                name: gateway-srv
                 port:
-                  number: 3001
-          - path: /get
-            pathType: Prefix
-            backend:
-              service:
-                name: get-srv
-                port:
-                  number: 3003
-          - path: /delete
-            pathType: Prefix
-            backend:
-              service:
-                name: delete-srv
-                port:
-                  number: 3002
-          - path: /update
-            pathType: Prefix
-            backend:
-              service:
-                name: update-srv
-                port:
-                  number: 3004
-                
+                  number: 3006
+
+          

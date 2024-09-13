@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-depl
+  template:
+    metadata:
+      labels:
+        app: auth-depl
+    spec:
+      containers:
+        - name: auth-depl
+          image: sarthakm96/auth
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+spec: 
+  type: ClusterIP
+  selector:
+    app: auth-depl
+  ports:
+    - name: auth-srv
+      protocol: TCP
+      port: 3005
+      targetPort: 3005

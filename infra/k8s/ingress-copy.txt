@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: blogs.com
+      http:
+         paths:
+          - path: /create
+            pathType: Prefix
+            backend:
+              service:
+                name: create-srv
+                port:
+                  number: 3001
+          - path: /get
+            pathType: Prefix
+            backend:
+              service:
+                name: get-srv
+                port:
+                  number: 3003
+          - path: /delete
+            pathType: Prefix
+            backend:
+              service:
+                name: delete-srv
+                port:
+                  number: 3002
+          - path: /update
+            pathType: Prefix
+            backend:
+              service:
+                name: update-srv
+                port:
+                  number: 3004
+                
