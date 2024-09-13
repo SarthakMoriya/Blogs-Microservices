@@ -5,10 +5,9 @@ import router from "./routes/routes.js";
 import nats from "nats";
 
 let pool;
-let NATS = nats;
 export const connectToNats = async () => {
   if (!pool) {
-    pool = await NATS.connect({ servers: ["nats://nats:4222"] });
+    pool = await nats.connect({ servers: ["nats://nats:4222"] });
   }
   return pool;
 };

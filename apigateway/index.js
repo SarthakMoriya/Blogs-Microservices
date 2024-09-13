@@ -18,7 +18,7 @@ const verifyToken = async (req, res, next) => {
     else
       res.status(401).json({ message: "Expired session Please login again" });
   } catch (error) {
-    
+    console.log(error)
     res
       .status(401)
       .json({
@@ -41,6 +41,7 @@ authRouter.post('/login',async(req,res)=>{
     res.status(404).json({message:"AUTH SERVICE ERROR",status:"fail",body:{}})
   }
 })
+
 authRouter.post('/signup',async(req,res)=>{
   try {
     let data=req.body;
@@ -65,6 +66,7 @@ router.post('/create',verifyToken,async (req,res)=>{
     res.status(404).json({message:"CREATE SERVICE ERROR",status:"fail",body:{}})
   }
 })
+
 router.delete('/delete/:id',verifyToken,async (req,res)=>{
   try {
     const blog=await axios.delete(`http://delete-srv:3002/delete/${req.params.id}`)
@@ -73,6 +75,18 @@ router.delete('/delete/:id',verifyToken,async (req,res)=>{
   } catch (error) {
     console.log(error)
     res.status(404).json({message:"DELETE SERVICE ERROR",status:"fail",body:{}})
+  }
+})
+
+router.put('/update/:id',verifyToken,async (req,res)=>{
+  try {
+    let data=req.body
+    const blog=await axios.put(`http://update-srv:3004/update/${req.params.id}`,data)
+    const {message,status,body}=blog.data
+    res.status(200).json({message,status,body})
+  } catch (error) {
+    console.log(error)
+    res.status(404).json({message:"UPDATE SERVICE ERROR",status:"fail",body:{}})
   }
 })
 
