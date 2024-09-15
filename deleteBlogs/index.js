@@ -7,12 +7,16 @@ import nats from "nats";
 const app = express();
 let pool;
 
-export const initializeNATS=async()=>{
-  if(!pool){
-    pool = await nats.connect({ servers: ["nats://nats:4222"] });
+export const initializeNATS = async () => {
+  try {
+    if (!pool) pool = await nats.connect(["nats://0.0.0.0:4222"]);
+    console.log(`NATS Connected at ${pool.getServer()}`);
+    return pool;
+  } catch (error) {
+    console.log("Error connecting to NATS!");
+    pool=null;
   }
-  return pool;
-}
+};
 
 
 mongoose.connect(

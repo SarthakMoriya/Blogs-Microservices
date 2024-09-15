@@ -9,7 +9,7 @@ export const updateBlog = async (req, res) => {
     const nc = await connectToNats();
     const sc = nats.StringCodec();
     console.log(blog)
-    nc.publish('update', sc.encode(JSON.stringify({ data: blog }))); 
+    await nc.publish('update', sc.encode(JSON.stringify({ data: blog }))); 
 
     return res.status(200).json({message:"blog updated",status:"success",body:{},error:{}})
 
