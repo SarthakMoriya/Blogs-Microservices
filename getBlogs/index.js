@@ -32,11 +32,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose
-  .connect(
-    `mongodb+srv://sarthak:p9wEwyQQbCAiNZPA@cluster0.dkryym7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-  )
-  .catch((err) => console.log("Error connecting to DB"));
+mongoose.connect(
+  `mongodb+srv://sarthak:p9wEwyQQbCAiNZPA@cluster0.dkryym7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+);
 
 app.use("/get", router);
 

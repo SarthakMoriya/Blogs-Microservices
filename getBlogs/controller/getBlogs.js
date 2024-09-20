@@ -1,6 +1,10 @@
-import { connectRedis, initializeNATS } from "../index.js";
 import Blog from "../models/blogModel.js";
+import User from "../models/authModel.js";
+import { connectRedis, initializeNATS } from "../index.js";
 import nats from "nats";
+import mongoose from "mongoose";
+
+mongoose.model("Users")
 
 export const handleNats = async () => {
   try {
@@ -9,17 +13,7 @@ export const handleNats = async () => {
     const sc = nats.StringCodec();
     if (redis == null) throw new Error("Error connecting to REDIS");
     if (nc == null) throw new Error("Error connecting to NATS");
-    await nc.subscribe("delete", (msg1) => {
-      const data1 = sc.decode(msg1.data);
-      console.log("Received message from topic D:", data1);
-      // Handle topic D message
-    });
 
-    await nc.subscribe("create", (msg2) => {
-      const data2 = sc.decode(msg2.data);
-      console.log("Received message from topic C:", data2);
-      // Handle topic C message
-    });
     // SUBSCRIBE TO ALL TOPICS
     const topic_d = nc.subscribe("delete");
     const topic_c = nc.subscribe("create");
@@ -43,9 +37,11 @@ export const handleNats = async () => {
         for await (const msg of topic_c) {
           const data = JSON.parse(sc.decode(msg.data));
           let { _id, ...others } = data.data;
+          console.log(_id,others)
           await redis.hSet("blogs", _id, JSON.stringify({ ...others }));
         }
       } catch (error) {
+        console.log(error)
         console.log("Error setting cache...");
       }
     };
@@ -70,7 +66,8 @@ export const handleNats = async () => {
 
 export const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find();
+    const blogs = await Blog.find().populate('author');
+    // blogs.forEach(async blog =>)
     handleNats();
 
     res.send(blogs);
