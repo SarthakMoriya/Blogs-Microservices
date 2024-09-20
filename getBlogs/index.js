@@ -9,17 +9,17 @@ import { handleNats } from "./controller/getBlogs.js";
 let pool;
 export const initializeNATS = async () => {
   try {
-    if (!pool) pool = await nats.connect({servers:["nats://localhost:4222"]});
+    if (!pool) pool = await nats.connect({servers:["nats://nats:4222"]});
     console.log(`NATS Connected at ${pool.getServer()}`);
     return pool;
   } catch (error) {
     console.log("Error connecting to NATS!");
-    pool=null;
+    pool=null
   }
 };
 
 export const connectRedis = async () => {
-  let client = await createClient()
+  let client = await createClient({ url: 'redis://redis:6379'})
     .on("error", (err) => {
       console.log("Redis Client Error", err);
     })

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: nats
-          image: nats:latest
+          image: nats
           ports:
             - containerPort: 4222
             - containerPort: 6222
