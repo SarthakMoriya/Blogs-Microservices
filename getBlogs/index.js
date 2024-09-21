@@ -39,7 +39,9 @@ app.use(cors());
 
 mongoose.connect(
   `mongodb+srv://sarthak:p9wEwyQQbCAiNZPA@cluster0.dkryym7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-);
+).catch(err => {
+  console.error("Error connecting to DB")
+});
 
 app.use("/get", router);
 
