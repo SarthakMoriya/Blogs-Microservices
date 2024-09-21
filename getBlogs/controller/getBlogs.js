@@ -70,9 +70,9 @@ export const getBlogs = async (req, res) => {
     // blogs.forEach(async blog =>)
     handleNats();
 
-    res.send(blogs);
+    res.status(200).json({message:"fetched blogs",status:"success",body:{blogs},error:{}})
   } catch (error) {
     console.log(error);
-    res.send(error);
+    res.status(200).json({message:"Error fetching blogs",status:"fail",body:{blogs:[]},error:{...error?.errorResponse}})
   }
 };

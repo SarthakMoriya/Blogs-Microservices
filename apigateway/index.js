@@ -90,6 +90,18 @@ router.put('/update/:id',verifyToken,async (req,res)=>{
   }
 })
 
+router.get('/',async(req,res)=>{
+  try {
+    const blog=await axios.get(`http://get-srv:3003/get/`)
+    // const blog=await axios.get(`http://localhost:3003/get/`)
+    const {message,status,body}=blog.data
+    res.status(200).json({message,status,body})
+  } catch (error) {
+    console.log(error)
+    res.status(404).json({message:"GET SERVICE ERROR",status:"fail",body:{}})
+  }
+})
+
 
 app.listen(3006,()=>{
   console.log("API GATEWAY listening on port:3006")

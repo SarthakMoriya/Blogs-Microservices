@@ -9,19 +9,24 @@ import { handleNats } from "./controller/getBlogs.js";
 let pool;
 export const initializeNATS = async () => {
   try {
-    if (!pool) pool = await nats.connect({servers:["nats://nats:4222"]});
+    if (!pool) pool = await nats.connect({ servers: ["nats://nats:4222"] });
+    // if (!pool) pool = await nats.connect(["nats://0.0.0.0:4222"]);
     console.log(`NATS Connected at ${pool.getServer()}`);
     return pool;
   } catch (error) {
     console.log("Error connecting to NATS!");
-    pool=null
+    pool = null;
   }
 };
 
 export const connectRedis = async () => {
-  let client = await createClient({ url: 'redis://redis:6379'})
+  let client = await createClient({ url: "redis://redis:6379" })
+  // let client = await createClient()
     .on("error", (err) => {
       console.log("Redis Client Error", err);
+      setTimeout(() => {
+        connectRedis();
+      },10000);
     })
     .connect();
   console.log("Redis Connected!");
@@ -41,6 +46,6 @@ app.use("/get", router);
 app.listen(3003, () => {
   // initializeNATS();
   // connectRedis();
-  handleNats()
+  handleNats();
   console.log("Get server listening on port 3003");
 });
