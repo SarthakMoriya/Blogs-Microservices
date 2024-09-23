@@ -4,7 +4,7 @@ import { connectRedis, initializeNATS } from "../index.js";
 import nats from "nats";
 import mongoose from "mongoose";
 
-mongoose.model("Users")
+mongoose.model("Users");
 
 export const handleNats = async () => {
   try {
@@ -37,11 +37,11 @@ export const handleNats = async () => {
         for await (const msg of topic_c) {
           const data = JSON.parse(sc.decode(msg.data));
           let { _id, ...others } = data.data;
-          console.log(_id,others)
+          console.log(_id, others);
           await redis.hSet("blogs", _id, JSON.stringify({ ...others }));
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
         console.log("Error setting cache...");
       }
     };
@@ -66,13 +66,32 @@ export const handleNats = async () => {
 
 export const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().populate('author');
+    const { page=1, limit=10 } = req.query;
+    const blogs = await Blog.find()
+      .populate("author")
+      .limit(limit)
+      .skip(page > 1 ? limit * (page - 1) : 0)
+      .sort({'createdAt':1})
     // blogs.forEach(async blog =>)
     handleNats();
 
-    res.status(200).json({message:"fetched blogs",status:"success",body:{blogs},error:{}})
+    res
+      .status(200)
+      .json({
+        message: "fetched blogs",
+        status: "success",
+        body: { blogs },
+        error: {},
+      });
   } catch (error) {
     console.log(error);
-    res.status(200).json({message:"Error fetching blogs",status:"fail",body:{blogs:[]},error:{...error?.errorResponse}})
+    res
+      .status(200)
+      .json({
+        message: "Error fetching blogs",
+        status: "fail",
+        body: { blogs: [] },
+        error: { ...error?.errorResponse },
+      });
   }
 };
