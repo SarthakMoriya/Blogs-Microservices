@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import router from "./routes/routes.js";
 import nats from "nats";
+import { getKafkaInstance } from "./kafka.js";
 
 let pool;
 export const initializeNATS = async () => {
@@ -19,6 +20,12 @@ export const initializeNATS = async () => {
     },5000);
   }
 };
+
+
+// Function to initialize and return Kafka instance
+
+
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -30,6 +37,7 @@ mongoose.connect(
 app.use("/create", router);
 
 app.listen(3001, () => {
-  initializeNATS();
+  // initializeNATS();
+  getKafkaInstance();
   console.log("Create server listening on port 3001");
 });

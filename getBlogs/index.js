@@ -4,7 +4,8 @@ import cors from "cors";
 import router from "./routes/routes.js";
 import nats from "nats";
 import { createClient } from "redis";
-import { handleNats } from "./controller/getBlogs.js";
+import { getKafkaInstance } from "./kafka.js";
+import { handleKafkaMessages } from "./controller/getBlogs.js";
 
 let pool;
 export const initializeNATS = async () => {
@@ -21,6 +22,7 @@ export const initializeNATS = async () => {
 
 export const connectRedis = async () => {
   let client = await createClient({ url: "redis://redis:6379" })
+  // let client = await createClient({ url: "redis://localhost:6379" })
   // let client = await createClient()
     .on("error", (err) => {
       console.log("Redis Client Error", err);
@@ -47,7 +49,9 @@ app.use("/get", router);
 
 app.listen(3003, () => {
   // initializeNATS();
-  // connectRedis();
-  handleNats();
+  // handleNats();
+  connectRedis();
+  getKafkaInstance();
+  handleKafkaMessages()
   console.log("Get server listening on port 3003");
 });

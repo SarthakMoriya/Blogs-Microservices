@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import router from './routes/route.js'
 import nats from "nats";
+import { getKafkaInstance } from "./kafka.js";
 
 let pool;
 let NATS = nats;
@@ -24,6 +25,7 @@ mongoose.connect(
 
 
 app.listen(3004, () => {
-  connectToNats()
+  // connectToNats();
+  getKafkaInstance();
   console.log("Update server listening on port 3004");
 });

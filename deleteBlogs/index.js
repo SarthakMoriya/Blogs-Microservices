@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import router from "./routes/route.js";
 import nats from "nats";
+import { getKafkaInstance } from "./kafka.js";
 
 const app = express();
 let pool;
@@ -27,6 +28,7 @@ app.use(cors());
 app.use("/delete", router);
 
 app.listen(3002, () => {
-  initializeNATS();
+  // initializeNATS();
+  getKafkaInstance();
   console.log("Delete server listening on port 3002");
 });
