@@ -57,7 +57,8 @@ authRouter.post('/signup',async(req,res)=>{
 router.post('/create',verifyToken,async (req,res)=>{
   try {
     let data=req.body
-    const blog=await axios.post('http://create-srv:3001/create/',data)
+    // const blog=await axios.post('http://create-srv:3001/create/',data)
+    const blog=await axios.post('http://localhost:3001/create/',data)
     console.log(blog.data)
     const {message,status,body,error}=blog.data
     res.status(200).json({message,status,body,error})
@@ -69,7 +70,8 @@ router.post('/create',verifyToken,async (req,res)=>{
 
 router.delete('/delete/:id',verifyToken,async (req,res)=>{
   try {
-    const blog=await axios.delete(`http://delete-srv:3002/delete/${req.params.id}`)
+    // const blog=await axios.delete(`http://delete-srv:3002/delete/${req.params.id}`)
+    const blog=await axios.delete(`http://localhost:3002/delete/${req.params.id}`)
     const {message,status,body}=blog.data
     res.status(200).json({message,status,body})
   } catch (error) {
@@ -81,7 +83,8 @@ router.delete('/delete/:id',verifyToken,async (req,res)=>{
 router.put('/update/:id',verifyToken,async (req,res)=>{
   try {
     let data=req.body
-    const blog=await axios.put(`http://update-srv:3004/update/${req.params.id}`,data)
+    // const blog=await axios.put(`http://update-srv:3004/update/${req.params.id}`,data)
+    const blog=await axios.put(`http://localhost:3004/update/${req.params.id}`,data)
     const {message,status,body}=blog.data
     res.status(200).json({message,status,body})
   } catch (error) {
@@ -92,8 +95,8 @@ router.put('/update/:id',verifyToken,async (req,res)=>{
 
 router.get('/',async(req,res)=>{
   try {
-    const blog=await axios.get(`http://get-srv:3003/get/`)
-    // const blog=await axios.get(`http://localhost:3003/get/`)
+    // const blog=await axios.get(`http://get-srv:3003/get/`)
+    const blog=await axios.get(`http://localhost:3003/get/`)
     const {message,status,body}=blog.data
     res.status(200).json({message,status,body})
   } catch (error) {

@@ -3,6 +3,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import router from "./routes/routes.js";
 import nats from "nats";
+import { getKafkaInstance } from "./kafka.js";
+import {createClient} from 'redis'
 
 const app = express();
 app.use(cors());
@@ -35,6 +37,23 @@ mongoose
   });
 
 app.listen(3008, () => {
-  connectToNats();
+  // connectToNats();
+  connectRedis();
+  getKafkaInstance();
   console.log("Comment GU listening on port 3008");
 });
+
+
+let client = null;
+export const connectRedis = async () => {
+  if (client == null) {
+    // let client = await createClient({ url: "redis://redis:6379" })
+    client = await createClient({ url: "redis://localhost:6379" })
+      .on("error", (err) => {
+        console.log("Redis Client Error", err);
+      })
+      .connect();
+  }
+  console.log("Redis Connected!");
+  return client;
+};

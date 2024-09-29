@@ -19,19 +19,20 @@ export const initializeNATS = async () => {
     pool = null;
   }
 };
-
+let client = null;
 export const connectRedis = async () => {
-  let client = await createClient({ url: "redis://redis:6379" })
-  // let client = await createClient({ url: "redis://localhost:6379" })
-  // let client = await createClient()
-    .on("error", (err) => {
-      console.log("Redis Client Error", err);
-      setTimeout(() => {
-        connectRedis();
-      },10000);
-    })
-    .connect();
-  console.log("Redis Connected!");
+  if (client == null) {
+    // let client = await createClient({ url: "redis://redis:6379" })
+    client = await createClient({ url: "redis://localhost:6379" })
+      .on("error", (err) => {
+        console.log("Redis Client Error", err);
+        // setTimeout(() => {
+        //   connectRedis();
+        // },10000);
+      })
+      .connect();
+    console.log("Redis Connected!");
+  }
   return client;
 };
 
@@ -39,19 +40,20 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect(
-  `mongodb+srv://sarthak:p9wEwyQQbCAiNZPA@cluster0.dkryym7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-).catch(err => {
-  console.error("Error connecting to DB")
-});
+mongoose
+  .connect(
+    `mongodb+srv://sarthak:p9wEwyQQbCAiNZPA@cluster0.dkryym7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+  )
+  .catch((err) => {
+    console.error("Error connecting to DB");
+  });
 
 app.use("/get", router);
 
 app.listen(3003, () => {
   // initializeNATS();
   // handleNats();
-  connectRedis();
   getKafkaInstance();
-  handleKafkaMessages()
+  handleKafkaMessages();
   console.log("Get server listening on port 3003");
 });

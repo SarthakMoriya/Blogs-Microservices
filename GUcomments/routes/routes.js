@@ -6,5 +6,5 @@ import {
 const router = express.Router();
 
 router.put("/comment", updateComment);
-router.delete("/comment/:commentId", getCommentsByBlogId);
+router.get("/comment/:id", getCommentsByBlogId);
 export default router;

@@ -6,8 +6,8 @@ export const getKafkaInstance = () => {
   if (!kafkaInstance) {
     kafkaInstance = new Kafka({
       clientId: "my-app",
-      // brokers: ["localhost:9092"], 
-      brokers: ["kafka:29092"],
+      brokers: ["localhost:9092"], 
+      // brokers: ["kafka:29092"],
     });
   }
   return kafkaInstance;

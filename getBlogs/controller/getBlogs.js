@@ -2,7 +2,7 @@ import Blog from "../models/blogModel.js";
 import User from "../models/authModel.js";
 import { connectRedis, initializeNATS } from "../index.js";
 import nats from "nats";
-import mongoose from "mongoose";
+import mongoose, { connect } from "mongoose";
 import { createConsumer, getKafkaInstance } from "../kafka.js";
 
 mongoose.model("Users");
@@ -111,8 +111,7 @@ export const getBlogs = async (req, res) => {
       .sort({ createdAt: 1 });
     // blogs.forEach(async blog =>)
     // handleNats();
-    handleKafkaMessages();
-
+    // handleRedis();
     res.status(200).json({
       message: "fetched blogs",
       status: "success",
@@ -129,3 +128,14 @@ export const getBlogs = async (req, res) => {
     });
   }
 };
+
+
+const handleRedis=async()=>{
+  console.log("HERE")
+  try {
+    const client=await connectRedis();
+    const blogs=await client.hGetAll('blogs')
+  } catch (error) {
+    console.log(error)
+  }
+}
