@@ -27,7 +27,10 @@ export const updateComment = async (req, res) => {
 export const getCommentsByBlogId = async (req, res) => {
   try {
     let comments = await retrieveCache(req.params.id); //blogId
-    if (comments.length)
+    // console.log("COmments")
+    // console.log(comments)
+
+    if (comments)
       res.status(200).json({
         message: "success",
         status: "success",
@@ -63,7 +66,7 @@ const handleCache = async (comment, type = "create") => {
     if (client == null) throw new Error("Couldn't connect redis");
     const { blogId, _id, ...others } = comment._doc;
     console.log(others);
-    type == "create"
+    type == "update"
       ? client.hSet(
           `post:${blogId}`,
           `comment:${_id}`,
@@ -74,24 +77,45 @@ const handleCache = async (comment, type = "create") => {
     console.log("ERROR UPDATING CACHE ");
   }
 };
+
 const retrieveCache = async (id) => {
   try {
-    let comments = [];
+    const comments = [];
     const client = await connectRedis();
-    if (client == null) throw new Error("Couldn't connect redis");
+    if (client == null) throw new Error("Couldn't connect to Redis");
+
     const commentsMap = await client.hGetAll(`post:${id}`);
-    let commentIds = Object.keys(commentsMap);
-    if (!commentIds) {
-    } else {
-      commentIds.map((id) => {
-        const {userId,description}=JSON.parse(commentsMap[id]);
-        
-        comments.push(JSON.parse(commentsMap[id]));
+    // console.log("Getting comments map")
+    // console.log(commentsMap)
+    const commentIds = Object.keys(commentsMap);
+
+    if (commentIds.length > 0) {
+      // Create an array of promises for fetching user data
+      const commentPromises = commentIds.map(async (commentId) => {
+        const { userId, description } = JSON.parse(commentsMap[commentId]);
+        // console.log("userID: " + userId + " description"+ description);
+        const user = JSON.parse(await client.hGet("users", JSON.stringify(userId)));
+        // console.log(user)
+        if (user) {
+          // Push comment data to the comments array
+          comments.push({
+            description,
+            userId,
+            username: user.username,
+            imageUrl: user.imageUrl,
+          });
+        }
       });
+
+      // Wait for all user data to be fetched
+      await Promise.all(commentPromises);
     }
+
+    // console.log("Returning comments", comments.length);
     return comments;
   } catch (error) {
     console.log(error);
     return [];
   }
 };
+

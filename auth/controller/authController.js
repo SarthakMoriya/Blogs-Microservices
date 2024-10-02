@@ -64,14 +64,14 @@ export const signup = async (req, res) => {
 };
 
 const handleUserCache = async (user) => {
-  console.log(user);
   const { _id, password, ...others } = user;
+  console.log("User id is "+user._id);
   try {
     const redis = await connectRedis();
     if (redis == null) throw new Error("Error connecting to REDIS");
     await redis.hSet(
       "users",
-      JSON.stringify(_id),
+      `${user._id}`,
       JSON.stringify({ ...others })
     );
   } catch (error) {
