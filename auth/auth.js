@@ -1,20 +1,29 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import router from './routes/route.js'
+import router from "./routes/route.js";
 import { createClient } from "redis";
+import "dotenv/config";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+console.log(process.env.MONGO_URL);
+app.use("/auth", router);
 
-app.use('/auth',router)
+const connectDB = async () => {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(`${process.env.MONGO_URL}`).catch((err) => {
+      reject(err);
+    });
+    resolve("DB CONNECTED");
+  });
+};
 
-mongoose.connect(
-  `mongodb+srv://sarthak:p9wEwyQQbCAiNZPA@cluster0.dkryym7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-);
-// p9wEwyQQbCAiNZPA
 app.listen(3005, () => {
+  connectDB()
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
   connectRedis();
   console.log("AUth service listening on port 3005");
 });

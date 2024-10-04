@@ -40,19 +40,23 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose
-  .connect(
-    `mongodb+srv://sarthak:p9wEwyQQbCAiNZPA@cluster0.dkryym7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-  )
-  .catch((err) => {
-    console.error("Error connecting to DB");
+const connectDB = async () => {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(`${process.env.MONGO_URL}`).catch((err) => {
+      reject(err);
+    });
+    resolve("DB CONNECTED");
   });
+};
 
 app.use("/get", router);
 
 app.listen(3003, () => {
   // initializeNATS();
   // handleNats();
+  connectDB()
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
   getKafkaInstance();
   handleKafkaMessages();
   console.log("Get server listening on port 3003");

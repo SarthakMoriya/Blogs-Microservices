@@ -27,19 +27,22 @@ export const connectToNats = async () => {
   return pool;
 };
 
-mongoose
-  .connect(
-    `mongodb+srv://sarthak:p9wEwyQQbCAiNZPA@cluster0.dkryym7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-  )
-  .catch((err) => {
-    console.log(err);
-    console.error("Error connecting to DB");
+const connectDB = async () => {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(`${process.env.MONGO_URL}`).catch((err) => {
+      reject(err);
+    });
+    resolve("DB CONNECTED");
   });
+};
 
 app.listen(3008, () => {
   // connectToNats();
-  connectRedis();
-  getKafkaInstance();
+  // connectRedis();
+  // getKafkaInstance();
+  connectDB()
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err));
   console.log("Comment GU listening on port 3008");
 });
 

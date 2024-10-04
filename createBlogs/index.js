@@ -4,7 +4,7 @@ import cors from "cors";
 import router from "./routes/routes.js";
 import nats from "nats";
 import { getKafkaInstance } from "./kafka.js";
-
+import "dotenv/config";
 let pool;
 export const initializeNATS = async () => {
   try {
@@ -17,26 +17,31 @@ export const initializeNATS = async () => {
     pool = null;
     setTimeout(() => {
       initializeNATS();
-    },5000);
+    }, 5000);
   }
 };
 
-
 // Function to initialize and return Kafka instance
-
-
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect(
-  `mongodb+srv://sarthak:p9wEwyQQbCAiNZPA@cluster0.dkryym7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-);
+const connectDB = async () => {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(`${process.env.MONGO_URL}`).catch((err) => {
+      reject(err);
+    });
+    resolve("DB CONNECTED");
+  });
+};
 
 app.use("/create", router);
 
 app.listen(3001, () => {
+  connectDB()
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
   // initializeNATS();
   getKafkaInstance();
   console.log("Create server listening on port 3001");
