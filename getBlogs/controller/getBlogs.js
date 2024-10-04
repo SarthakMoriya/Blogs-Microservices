@@ -29,17 +29,17 @@ export const handleKafkaMessages = async () => {
           await redis.hSet("blogs", _id, JSON.stringify({ ...others }));
         }
         if (topic == "delete") {
-          console.log("INSIDE DELETE",message.value.toString());
-          const data =JSON.parse(message.value.toString());
-          console.log(data)
+          console.log("INSIDE DELETE", message.value.toString());
+          const data = JSON.parse(message.value.toString());
+          console.log(data);
           await redis.hDel("blogs", data.data);
         }
       },
     });
   } catch (error) {
-    console.log("-------------------------")
+    console.log("-------------------------");
     console.log(error);
-    console.log("-------------------------")
+    console.log("-------------------------");
   }
 };
 
@@ -103,21 +103,31 @@ export const handleKafkaMessages = async () => {
 
 export const getBlogs = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
-    const blogs = await Blog.find()
-      .populate("author")
-      .limit(limit)
-      .skip(page > 1 ? limit * (page - 1) : 0)
-      .sort({ createdAt: 1 });
-    // blogs.forEach(async blog =>)
-    // handleNats();
-    // handleRedis();
-    res.status(200).json({
-      message: "fetched blogs",
-      status: "success",
-      body: { blogs },
-      error: {},
-    });
+    let blogs = await handleRedis();
+    if (blogs.length) {
+      res.status(200).json({
+        message: "fetched blogs",
+        status: "success",
+        body: { blogs },
+        error: {},
+      });
+    } else {
+      const { page = 1, limit = 10 } = req.query;
+      blogs = await Blog.find()
+        .populate("author")
+        .limit(limit)
+        .skip(page > 1 ? limit * (page - 1) : 0)
+        .sort({ createdAt: 1 });
+      // blogs.forEach(async blog =>)
+      // handleNats();
+      // handleRedis();
+      res.status(200).json({
+        message: "fetched blogs",
+        status: "success",
+        body: { blogs },
+        error: {},
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(200).json({
@@ -129,13 +139,76 @@ export const getBlogs = async (req, res) => {
   }
 };
 
-
-const handleRedis=async()=>{
-  console.log("HERE")
+const handleRedis = async () => {
+  console.log("HERE");
   try {
-    const client=await connectRedis();
-    const blogs=await client.hGetAll('blogs')
+    let blogs = [];
+    let finalBlogs = [];
+    const client = await connectRedis();
+    let data = Object.values(await client.hGetAll("blogs"));
+    // if redis had some data
+    if (data.length) blogs = data.map((blog) => JSON.parse(blog));
+
+    if (blogs.length) {
+      const processBlogs = async (blogs) => {
+        const finalBlogs = await Promise.all(
+          blogs.map(async (blog) => {
+            let authorId = blog.author;
+
+            let author = await client.hGet("users", `"${authorId}"`);
+
+            if (author) {
+              blog.author = JSON.parse(author);
+              return blog;
+            } else {
+              // Search DB logic here if necessary
+              return blog; // Or handle the case appropriately if the author is not found
+            }
+          })
+        );
+
+        return finalBlogs;
+      };
+      finalBlogs = await processBlogs(blogs);
+    }
+    return finalBlogs;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
+
+export const getBlogById = async (req, res) => {
+  try {
+    let blogs = [];
+    const client = await connectRedis();
+    let cached_blogs = JSON.parse(await client.hGet("blogs", req.params.id));
+    if (cached_blogs) {
+      let authorId = cached_blogs.author;
+      let author = await client.hGet("users", `"${authorId}"`);
+      if (author) cached_blogs.author = author;
+      res.status(200).json({
+        message: "fetched blogs",
+        status: "success",
+        body: { blogs: cached_blogs },
+        error: {},
+      });
+    } else {
+      console.log("GETTING BLOG:"+req.params.id+" FROM DB...")
+      blogs = await Blog.find({ _id: req.params.id }).populate("author");
+      res.status(200).json({
+        message: "fetched blogs",
+        status: "success",
+        body: { blogs },
+        error: {},
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(200).json({
+      message: "Error fetching blogs",
+      status: "fail",
+      body: { blogs: [] },
+      error: { ...error?.errorResponse },
+    });
+  }
+};
