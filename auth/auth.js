@@ -8,15 +8,18 @@ import "dotenv/config";
 const app = express();
 app.use(cors());
 app.use(express.json());
-console.log(process.env.MONGO_URL);
 app.use("/auth", router);
 
 const connectDB = async () => {
   return new Promise((resolve, reject) => {
-    mongoose.connect(`${process.env.MONGO_URL}`).catch((err) => {
-      reject(err);
-    });
-    resolve("DB CONNECTED");
+    mongoose
+      .connect(`${process.env.MONGO_URL}`)
+      .then(() => {
+        resolve("DB CONNECTED");
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 };
 

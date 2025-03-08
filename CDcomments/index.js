@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import router from "./routes/routes.js";
 import { getKafkaInstance } from "./kafka.js";
 import { createClient } from "redis";
-import 'dotenv/config'
+import "dotenv/config";
 
 const app = express();
 app.use(cors());
@@ -13,17 +13,21 @@ app.use("/blogs", router);
 
 const connectDB = async () => {
   return new Promise((resolve, reject) => {
-    mongoose.connect(`${process.env.MONGO_URL}`).catch((err) => {
-      reject(err);
-    });
-    resolve("DB CONNECTED");
+    mongoose
+      .connect(`${process.env.MONGO_URL}`)
+      .then(() => {
+        resolve("DB CONNECTED");
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 };
 
 app.listen(3007, () => {
   connectDB()
-  .then((res) => console.log(res))
-  .catch((err) => console.log(err));
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
   getKafkaInstance();
   connectRedis();
   console.log("Comment CR listening on port 3007");

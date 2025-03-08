@@ -6,6 +6,7 @@ import nats from "nats";
 import { createClient } from "redis";
 import { getKafkaInstance } from "./kafka.js";
 import { handleKafkaMessages } from "./controller/getBlogs.js";
+import "dotenv/config";
 
 let pool;
 export const initializeNATS = async () => {
@@ -40,12 +41,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
 const connectDB = async () => {
   return new Promise((resolve, reject) => {
-    mongoose.connect(`${process.env.MONGO_URL}`).catch((err) => {
+    mongoose.connect(`${process.env.MONGO_URL}`)
+    .then(()=>{
+      resolve("DB CONNECTED");
+    })
+    .catch((err) => {
       reject(err);
     });
-    resolve("DB CONNECTED");
   });
 };
 
@@ -57,7 +62,7 @@ app.listen(3003, () => {
   connectDB()
     .then((res) => console.log(res))
     .catch((err) => console.log(err));
-  getKafkaInstance();
-  handleKafkaMessages();
+  // getKafkaInstance();
+  // handleKafkaMessages();
   console.log("Get server listening on port 3003");
 });

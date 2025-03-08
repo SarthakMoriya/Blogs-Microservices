@@ -22,10 +22,14 @@ export const initializeNATS = async () => {
 
 const connectDB = async () => {
   return new Promise((resolve, reject) => {
-    mongoose.connect(`${process.env.MONGO_URL}`).catch((err) => {
-      reject(err);
-    });
-    resolve("DB CONNECTED");
+    mongoose
+      .connect(`${process.env.MONGO_URL}`)
+      .then(() => {
+        resolve("DB CONNECTED");
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 };
 app.use(express.json());
