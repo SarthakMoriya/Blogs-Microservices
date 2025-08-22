@@ -8,7 +8,7 @@ export const login = (user) => axios.post(`${API_URL}/auth/login`, user);
 
 export const getBlogs = () => axios.get(`${API_URL}/blogs`);
 export const getBlog = (id) => axios.get(`${API_URL}/blogs/${id}`);
-export const createBlog = (blog) => axios.post(`${API_URL}/create`, blog);
+export const createBlog = (blog) => axios.post(`${API_URL}/blogs/create`, blog);
 export const updateBlog = (id, blog) => axios.put(`${API_URL}/blogs/${id}`, blog);
 export const deleteBlog = (id) => axios.delete(`${API_URL}/blogs/${id}`);
 

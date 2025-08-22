@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Save, Eye, ImagePlus, Tag, FileText, Calendar, User, Hash, Globe, Settings } from 'lucide-react';
+import { createBlog } from '../api/api';
 
 const BlogCreateForm = () => {
   const [formData, setFormData] = useState({
@@ -103,20 +104,15 @@ const BlogCreateForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData)
     
     if (!validateForm()) return;
     
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('/api/blogs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-      
+      const response=await createBlog(JSON.stringify(formData))
+      console.log(response)
       if (response.ok) {
         const result = await response.json();
         console.log('Blog created successfully:', result);
@@ -211,7 +207,7 @@ const BlogCreateForm = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 text-lg font-medium ${
+                      className={` text-gray-700 w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 text-lg font-medium ${
                         errors.name 
                           ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
                           : 'border-slate-200 focus:border-indigo-500 focus:ring-indigo-200'
@@ -232,7 +228,7 @@ const BlogCreateForm = () => {
                       name="slug"
                       value={formData.slug}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
+                      className=" text-gray-700 w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
                       placeholder="blog-url-slug"
                     />
                     <p className="text-xs text-slate-500 mt-1">Auto-generated from title, but you can customize it</p>
@@ -249,7 +245,7 @@ const BlogCreateForm = () => {
                       name="image"
                       value={formData.image}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
+                      className="text-gray-700 w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
                       placeholder="https://example.com/image.jpg"
                     />
                   </div>
@@ -264,7 +260,7 @@ const BlogCreateForm = () => {
                       value={formData.desc}
                       onChange={handleInputChange}
                       rows={4}
-                      className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 ${
+                      className={`text-gray-700 w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 ${
                         errors.desc 
                           ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
                           : 'border-slate-200 focus:border-indigo-500 focus:ring-indigo-200'
@@ -284,7 +280,7 @@ const BlogCreateForm = () => {
                       value={formData.content}
                       onChange={handleInputChange}
                       rows={12}
-                      className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 ${
+                      className={`text-gray-700 w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 ${
                         errors.content 
                           ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
                           : 'border-slate-200 focus:border-indigo-500 focus:ring-indigo-200'
@@ -311,7 +307,7 @@ const BlogCreateForm = () => {
                         name="author"
                         value={formData.author}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 ${
+                        className={`text-gray-700 w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 ${
                           errors.author 
                             ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
                             : 'border-slate-200 focus:border-indigo-500 focus:ring-indigo-200'
@@ -355,7 +351,7 @@ const BlogCreateForm = () => {
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyDown={addTag}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
+                      className="text-gray-700 w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
                       placeholder="Type a tag and press Enter"
                     />
                     <div className="flex flex-wrap gap-2 mt-3">
@@ -424,7 +420,7 @@ const BlogCreateForm = () => {
                       name="metaTitle"
                       value={formData.metaTitle}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
+                      className="text-gray-700 w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
                       placeholder="SEO optimized title (60 chars max)"
                       maxLength={60}
                     />
@@ -458,7 +454,7 @@ const BlogCreateForm = () => {
                       value={keywordInput}
                       onChange={(e) => setKeywordInput(e.target.value)}
                       onKeyDown={addKeyword}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
+                      className=" text-gray-700 w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition-all duration-200"
                       placeholder="Type a keyword and press Enter"
                     />
                     <div className="flex flex-wrap gap-2 mt-3">
