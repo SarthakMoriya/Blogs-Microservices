@@ -3,15 +3,19 @@ import { Kafka } from "kafkajs";
 let kafkaInstance = null;
 
 export const getKafkaInstance = () => {
-  if (!kafkaInstance) {
-    console.log("first instance")
-    kafkaInstance = new Kafka({
-      clientId: "my-app",
-      brokers: ["localhost:9092"], 
-      // brokers: ["kafka:29092"],
-    });
+  try {
+    if (!kafkaInstance) {
+      console.log("first instance");
+      kafkaInstance = new Kafka({
+        clientId: "my-app",
+        brokers: ["localhost:9092"],
+        // brokers: ["kafka:29092"],
+      });
+    }
+    return kafkaInstance;
+  } catch (error) {
+    return null;
   }
-  return kafkaInstance;
 };
 export const createProducer = async () => {
   const kafka = getKafkaInstance();

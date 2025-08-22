@@ -23,15 +23,13 @@ export const initializeNATS = async () => {
 let client = null;
 export const connectRedis = async () => {
   if (client == null) {
-    // let client = await createClient({ url: "redis://redis:6379" })
-    client = await createClient({ url: "redis://localhost:6379" })
-      .on("error", (err) => {
-        console.log("Redis Client Error", err);
-        // setTimeout(() => {
-        //   connectRedis();
-        // },10000);
-      })
-      .connect();
+    client = createClient({ url: "redis://redis:6379" }); // assign to outer variable
+
+    client.on("error", (err) => {
+      console.log("Redis Client Error", err);
+    });
+
+    await client.connect();
     console.log("Redis Connected!");
   }
   return client;
@@ -41,16 +39,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-
 const connectDB = async () => {
   return new Promise((resolve, reject) => {
-    mongoose.connect(`${process.env.MONGO_URL}`)
-    .then(()=>{
-      resolve("DB CONNECTED");
-    })
-    .catch((err) => {
-      reject(err);
-    });
+    mongoose
+      .connect(`${process.env.MONGO_URL}`)
+      .then(() => {
+        resolve("DB CONNECTED");
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 };
 
@@ -62,7 +60,7 @@ app.listen(3003, () => {
   connectDB()
     .then((res) => console.log(res))
     .catch((err) => console.log(err));
-  // getKafkaInstance();
-  // handleKafkaMessages();
+  getKafkaInstance();
+  handleKafkaMessages();
   console.log("Get server listening on port 3003");
 });

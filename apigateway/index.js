@@ -32,7 +32,8 @@ authRouter.post('/login',async(req,res)=>{
   try {
     let data=req.body;
     console.log(data)
-    const response=await axios.post('http://auth-srv:3005/auth/login',data)
+    // const response=await axios.post('http://auth-srv:3005/auth/login',data)
+    const response=await axios.post('http://localhost:3005/auth/login',data)
     const {message,status,body}=response.data
     console.log(response.data)
     res.status(200).json({message,status,body})
@@ -45,7 +46,8 @@ authRouter.post('/login',async(req,res)=>{
 authRouter.post('/signup',async(req,res)=>{
   try {
     let data=req.body;
-    const response=await axios.post('http://auth-srv:3005/auth/signup',data)
+    // const response=await axios.post('http://auth-srv:3005/auth/signup',data)
+    const response=await axios.post('http://http://localhost:3005/auth/signup',data)
     const {message,status,body}=response.data
     res.status(200).json({message,status,body})
   } catch (error) {

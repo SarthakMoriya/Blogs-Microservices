@@ -10,6 +10,7 @@ mongoose.model("Users");
 export const handleKafkaMessages = async () => {
   try {
     const redis = await connectRedis();
+    console.log(redis)
     if (redis == null) throw new Error("Error connecting to REDIS");
 
     const consumer = await createConsumer("message-bus", [
@@ -140,7 +141,6 @@ export const getBlogs = async (req, res) => {
 };
 
 const handleRedis = async () => {
-  console.log("HERE");
   try {
     let blogs = [];
     let finalBlogs = [];

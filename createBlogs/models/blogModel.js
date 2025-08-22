@@ -21,7 +21,7 @@ const blogSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    category: { type: String, required: true, default: "general" },
+    category: { type: String, required: false, default: "general" },
     tags: [{ type: String }],
     status: { type: String, enum: ["draft", "published", "archived"], default: "draft" },
     featured: { type: Boolean, default: false },

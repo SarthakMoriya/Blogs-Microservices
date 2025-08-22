@@ -9,21 +9,27 @@ const handleNats = async (blog) => {
 };
 
 const handleKafka = async (blog) => {
-  const producer =await createProducer();
+  // 1) Creates a producer from the helper function
+  const producer = await createProducer();
   try {
+    // 2) Sends a message to 'create' topic
     await producer.send({
-      topic:"create",
-      messages: [{key:"key1",value:JSON.stringify(blog)}]
-    })
-    console.log("CREATE topic published")
+      topic: "create",
+      messages: [
+        {
+          key: "key1", // used for partioning not used in our case
+          value: JSON.stringify(blog), // payload
+        },
+      ],
+    });
+    console.log("CREATE topic published");
   } catch (error) {
-    console.log(error)
-    console.log("Error creating topic -- CREATE")
-  }finally{
+    console.log(error);
+    console.log("Error creating topic -- CREATE");
+  } finally {
     await producer.disconnect();
   }
-}
-
+};
 
 export const createBlog = async (req, res) => {
   try {
@@ -31,23 +37,19 @@ export const createBlog = async (req, res) => {
     await blog.save();
     // handleNats(blog);
     handleKafka(blog);
-    res
-      .status(200)
-      .json({
-        message: "blog created",
-        status: "success",
-        body: {},
-        error: {},
-      });
+    res.status(200).json({
+      message: "blog created",
+      status: "success",
+      body: {},
+      error: {},
+    });
   } catch (error) {
     console.log("Error " + error);
-    res
-      .status(200)
-      .json({
-        message: "Error creating blog",
-        status: "fail",
-        body: {},
-        error: { ...error?.errorResponse },
-      });
+    res.status(200).json({
+      message: "Error creating blog",
+      status: "fail",
+      body: {},
+      error: { ...error?.errorResponse },
+    });
   }
 };

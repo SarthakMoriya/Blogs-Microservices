@@ -34,15 +34,13 @@ app.listen(3005, () => {
 let client = null;
 export const connectRedis = async () => {
   if (client == null) {
-    // let client = await createClient({ url: "redis://redis:6379" })
-    client = await createClient({ url: "redis://localhost:6379" })
-      .on("error", (err) => {
-        console.log("Redis Client Error", err);
-        // setTimeout(() => {
-        //   connectRedis();
-        // },10000);
-      })
-      .connect();
+    client = createClient({ url: "redis://redis:6379" }); // assign to outer variable
+
+    client.on("error", (err) => {
+      console.log("Redis Client Error", err);
+    });
+
+    await client.connect();
     console.log("Redis Connected!");
   }
   return client;

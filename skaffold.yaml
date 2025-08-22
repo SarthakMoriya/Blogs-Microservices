@@ -5,7 +5,7 @@ manifests:
     - infra/k8s/*
 build:
   local:
-    push: false
+    push: true
   artifacts:
     - image: sarthakm96/auth
       context: auth
