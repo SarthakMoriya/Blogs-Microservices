@@ -2,10 +2,12 @@
   "name": "auth",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "auth.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon auth.js"
+    "start": "nodemon auth.js",
+    "dev": "cross-env NODE_ENV=development nodemon auth.js",
+    "prod": "cross-env NODE_ENV=production nodemon auth.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,7 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "cross-env": "^10.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.20.0",
     "jsonwebtoken": "^9.0.2",

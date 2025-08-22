@@ -1,4 +1,5 @@
 import { Kafka } from "kafkajs";
+import config from "./config.js";
 
 let kafkaInstance = null;
 
@@ -8,7 +9,7 @@ export const getKafkaInstance = () => {
       console.log("first instance");
       kafkaInstance = new Kafka({
         clientId: "my-app",
-        brokers: ["localhost:9092"],
+        brokers: [config.KAFKA_URL],
         // brokers: ["kafka:29092"],
       });
     }

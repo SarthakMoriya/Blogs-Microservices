@@ -7,6 +7,7 @@ import { createClient } from "redis";
 import { getKafkaInstance } from "./kafka.js";
 import { handleKafkaMessages } from "./controller/getBlogs.js";
 import "dotenv/config";
+import config from "./config.js";
 
 let pool;
 export const initializeNATS = async () => {
@@ -23,7 +24,7 @@ export const initializeNATS = async () => {
 let client = null;
 export const connectRedis = async () => {
   if (client == null) {
-    client = createClient({ url: "redis://redis:6379" }); // assign to outer variable
+    client = createClient({ url: config.REDIS_URL }); // assign to outer variable
 
     client.on("error", (err) => {
       console.log("Redis Client Error", err);

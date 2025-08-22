@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import router from "./routes/route.js";
 import { createClient } from "redis";
 import "dotenv/config";
-
+import config from "./config.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -28,13 +28,13 @@ app.listen(3005, () => {
     .then((res) => console.log(res))
     .catch((err) => console.log(err));
   connectRedis();
-  console.log("AUth service listening on port 3005");
+  console.log("Auth service listening on port 3005");
 });
 
 let client = null;
 export const connectRedis = async () => {
   if (client == null) {
-    client = createClient({ url: "redis://redis:6379" }); // assign to outer variable
+    client = createClient({ url: config.REDIS_URL }); // assign to outer variable
 
     client.on("error", (err) => {
       console.log("Redis Client Error", err);

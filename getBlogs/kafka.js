@@ -1,12 +1,16 @@
 import { Kafka } from "kafkajs";
+import config from "./config.js";
 
 let kafkaInstance = null;
+
+console.log("KAFKA URL IS")
+console.log(config)
 
 export const getKafkaInstance = () => {
   if (!kafkaInstance) {
     kafkaInstance = new Kafka({
       clientId: "my-app",
-      brokers: ["localhost:9092"], 
+      brokers: [config.KAFKA_URL], 
       // brokers: ["kafka:29092"],
     });
   }
