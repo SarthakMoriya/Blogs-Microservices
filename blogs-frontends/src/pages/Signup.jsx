@@ -11,6 +11,7 @@ import {
   EyeOff,
   CheckCircle,
 } from "lucide-react";
+import { signup } from "../api/api";
 
 export const Signup = () => {
     const navigate = useNavigate();
@@ -85,15 +86,7 @@ export const Signup = () => {
 
     try {
       const { confirmPassword, ...signupData } = formData;
-      const response = await fetch("/api/auth/signup", {
-        // Make sure this endpoint is correct
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(signupData),
-      });
-
+      const response =await signup(JSON.stringify(signupData))
       if (response.ok) {
         const result = await response.json();
         console.log("Signup successful:", result);

@@ -36,8 +36,8 @@ app.listen(3007, () => {
 let client = null;
 export const connectRedis = async () => {
   if (client == null) {
-    // let client = await createClient({ url: "redis://redis:6379" })
-    client = await createClient({ url: "redis://localhost:6379" })
+    // client = await createClient({ url: "redis://localhost:6379" })
+    let client = await createClient({ url: "redis://redis:6379" })
       .on("error", (err) => {
         console.log("Redis Client Error", err);
       })

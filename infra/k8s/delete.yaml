@@ -15,6 +15,9 @@ spec:
       containers:
         - name: delete-depl
           image: sarthakm96/delete
+          envFrom:
+           - configMapRef:
+              name: common-config          
 ---
 apiVersion: v1
 kind: Service
@@ -29,3 +32,20 @@ spec:
       protocol: TCP
       port: 3002
       targetPort: 3002
+      
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common-config
+data:
+  NODE_ENV: production
+
+  AUTH_SERVICE_URL: http://auth-srv:3005
+  CREATE_SERVICE_URL: http://create-srv:3007
+  DELETE_SERVICE_URL: http://delete-srv:3008
+  UPDATE_SERVICE_URL: http://update-srv:3009
+  GET_SERVICE_URL: http://get-srv:3010  
+  MONGO_URL: mongodb://mongo:27017
+  REDIS_URL: redis://redis:6379
+  KAFKA_URL: kafka:9092  

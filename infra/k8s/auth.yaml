@@ -24,6 +24,9 @@ spec:
         - name: auth-depl             # Name of the container inside the Pod
           image: sarthakm96/auth     # Docker image to run in the container
                                       # Kubernetes will pull this image and run it inside the Pod
+          envFrom:
+           - configMapRef:
+              name: auth-config
 
 # -----------------------------
 # Service: exposes Pods
@@ -44,3 +47,12 @@ spec:
       protocol: TCP                   # Protocol used
       port: 3005                      # Port exposed by the Service inside the cluster
       targetPort: 3005                # Port on the Pod/container to forward traffic to
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-config
+data:
+  MONGO_URL: mongodb://mongo:27017/auth
+  REDIS_URL: redis://redis:6379
+  KAFKA_URL: kafka:9092
